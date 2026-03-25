@@ -5,8 +5,6 @@ glew/2.2.0
 assimp/5.2.2
 physx/4.1.1
 freetype/2.11.1
-sdl/2.28.3
-sdl_image/2.0.5
 
 [generators]
 CMakeDeps
@@ -14,6 +12,5 @@ CMakeToolchain
 
 [options]
 physx/*:shared=False
-sdl/*:jack=False
 assimp/*:with_ifc=False
 assimp/*:with_3mf_exporter=False

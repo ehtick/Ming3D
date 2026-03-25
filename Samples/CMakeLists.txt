@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.3)
 project(Samples)
 
 find_package(assimp REQUIRED)
-find_package(SDL2 REQUIRED)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES
@@ -48,7 +47,7 @@ target_link_libraries(Samples Core)
 target_link_libraries(Samples Engine)
 target_link_libraries(Samples Networking)
 target_link_libraries(Samples Rendering)
-target_link_libraries(Samples SDL2::SDL2)
+target_link_libraries(Samples glfw)
 target_link_libraries(Samples assimp::assimp)
 
 #Set working directory to the directory where "Resources" folder is located

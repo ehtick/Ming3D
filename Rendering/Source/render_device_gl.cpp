@@ -17,15 +17,21 @@ namespace Ming3D::Rendering
 {
     RenderDeviceGL::RenderDeviceGL()
     {
+        glewExperimental = GL_TRUE;
+        if (glewInit())
+        {
+            LOG_ERROR() << "Failed to initialise GLEW";
+        }
+
         const GLubyte* vendor = glGetString(GL_VENDOR);
         const GLubyte* renderer = glGetString(GL_RENDERER);
         LOG_INFO() << "Graphics Vendor: " << vendor;
         LOG_INFO() << "Graphics Renderer: " << renderer;
 
-        if (glewInit())
-        {
-            LOG_ERROR() << "Failed to initialise GLEW";
-        }
+        // Core profile requires a VAO to be bound
+        GLuint vao;
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
 
         mDefaultRasteriserState = (RasteriserStateGL*)CreateRasteriserState(RasteriserStateCullMode::Back, true);
         

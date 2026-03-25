@@ -8,9 +8,9 @@
 #include "render_device_factory.h"
 
 #ifdef MING3D_OPENGL
-#include <SDL.h>
-#include "sdl_window.h"
-#include "Input/input_handler_sdl.h"
+#include <GLFW/glfw3.h>
+#include "glfw_window.h"
+#include "Input/input_handler_glfw.h"
 #else
 #include "winapi_window.h"
 #endif
@@ -41,28 +41,22 @@ namespace Ming3D
     void PlatformWin32::Initialise()
     {
 #ifdef MING3D_OPENGL
-        if (SDL_Init(SDL_INIT_VIDEO) != 0)
-            LOG_ERROR() << "Failed to initialise SDL";
+        if (!glfwInit())
+            LOG_ERROR() << "Failed to initialise GLFW";
         else
         {
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-            //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-            //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwWindowHint(GLFW_RED_BITS, 8);
+            glfwWindowHint(GLFW_GREEN_BITS, 8);
+            glfwWindowHint(GLFW_BLUE_BITS, 8);
+            glfwWindowHint(GLFW_ALPHA_BITS, 8);
+            glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+            glfwWindowHint(GLFW_DEPTH_BITS, 24);
+            glfwWindowHint(GLFW_STENCIL_BITS, 0);
 
-            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-            SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-            SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
-
-            SDL_version linkedver; SDL_version compiledver;
-            SDL_GetVersion(&linkedver);
-            SDL_VERSION(&compiledver);
-            LOG_INFO() << "SDL compiled version: " << (int)compiledver.major << "." << (int)compiledver.minor << ", pathch: " << (int)compiledver.patch;
-            LOG_INFO() << "SDL linked version: " << (int)linkedver.major << "." << (int)linkedver.minor << ", pathch: " << (int)linkedver.patch;
+            LOG_INFO() << "GLFW version: " << glfwGetVersionString();
         }
 #endif
 
@@ -100,7 +94,7 @@ namespace Ming3D
     {
         Rendering::WindowBase* window;
 #ifdef MING3D_OPENGL
-        window = new Rendering::SDLWindow();
+        window = new Rendering::GLFWWindow();
 #else
         auto wndProcCallback = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
         {
@@ -128,7 +122,7 @@ namespace Ming3D
     InputHandler* PlatformWin32::CreateInputHandler(Rendering::WindowBase* window)
     {
 #if MING3D_OPENGL
-        return new InputHandlerSDL();
+        return new InputHandlerGLFW(static_cast<Rendering::GLFWWindow*>(window));
 #else
         return new InputHandlerWin32();
 #endif

@@ -16,6 +16,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_BINARY_DIR}" "${CMAKE_CURREN
 
 set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ExternalLibraries" CACHE PATH "External library directory")
 
+# GLFW options
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+add_subdirectory(ThirdParty/glfw)
+
+# stb (header-only image loading)
+add_library(stb STATIC ThirdParty/stb/stb_image_impl.cpp)
+target_include_directories(stb PUBLIC ThirdParty/stb)
+
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
